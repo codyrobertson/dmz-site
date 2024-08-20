@@ -1,0 +1,31 @@
+{
+    "name": "DMZ.FUN App",
+    "short_name": "DMZ",
+    "description": "Join DMZ.FUN to trade, swap, and launch memecoins effortlessly with friends. Discover top tokens and enjoy a seamless, secure trading experience on Solana. Available on mobile.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0B0C0E",
+    "theme_color": "#924FE8",
+    "icons": [
+      {
+        "src": "/dist/comp/logo.png",
+        "sizes": "1000x1000",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/screenshots/mobile-screenshot.png",
+        "sizes": "750x1334",
+        "type": "image/png",
+        "form_factor": "narrow"
+      },
+      {
+        "src": "/screenshots/desktop-screenshot.png",
+        "sizes": "1280x800",
+        "type": "image/png",
+        "form_factor": "wide"
+      }
+    ]
+  }
+  
