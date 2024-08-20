@@ -1,6 +1,9 @@
 import React from 'react';
 import useBrowserConditions from './browserConditions';
 
+import React from 'react';
+import useBrowserConditions from '../hooks/useBrowserConditions';
+
 const WebShareAPI: React.FC = () => {
   const { isMobile } = useBrowserConditions();
 
@@ -53,7 +56,6 @@ const WebShareAPI: React.FC = () => {
     >
       <span className="relative z-10">Share</span>
       <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white opacity-0 group-hover:opacity-30 transition-opacity duration-300 ease-out"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[shine_1.2s_infinite]"></div>
     </button>
   );
 };

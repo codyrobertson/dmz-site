@@ -89,3 +89,21 @@ if (HOSTNAME_WHITELIST.indexOf(new URL(event.request.url).hostname) > -1) {
     )
 }
 })
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  if (HOSTNAME_WHITELIST.includes(new URL(event.request.url).hostname)) {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+  }
+});

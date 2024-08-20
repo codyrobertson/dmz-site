@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode.react';
 import ReactDOM from 'react-dom';
 import useBrowserConditions from './browserConditions';
@@ -10,6 +10,68 @@ interface ShinyButtonProps {
 
 const ShinyButton: React.FC<ShinyButtonProps> = ({ text, className }) => {
   const { isMobile } = useBrowserConditions();
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleAddToHomeScreen = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        setDeferredPrompt(null);
+      });
+    } else {
+      alert("Add to Home Screen is not supported in this browser. Please use the browser's menu to add to home screen.");
+    }
+  };
+
+  const handleClick = async () => {
+    if (isMobile) {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Check this out!',
+            text: 'Visit this website',
+            url: window.location.href,
+          });
+        } catch (err) {
+          console.error('Error using Web Share API:', err);
+        }
+      } else {
+        alert('Web Share API is not supported in your browser. Please try another browser or device.');
+      }
+    } else {
+      // Show the QR code modal for desktop users
+      showQRCodeModal();
+    }
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.active) {
+          console.log('Service worker is active');
+        }
+      } catch (error) {
+        console.error('Service Worker error', error);
+      }
+    }
+  };
 
   const showQRCodeModal = () => {
     const modal = document.createElement('div');
@@ -61,38 +123,6 @@ const ShinyButton: React.FC<ShinyButtonProps> = ({ text, className }) => {
           }, 300);
         }
       });
-    }
-  };
-
-  const handleClick = async () => {
-    if (isMobile) {
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'Check this out!',
-            text: 'Visit this website',
-            url: window.location.href,
-          });
-        } catch (err) {
-          console.error('Error using Web Share API:', err);
-        }
-      } else {
-        alert('Web Share API is not supported in your browser. Please try another browser or device.');
-      }
-    } else {
-      // Show the QR code modal for desktop users
-      showQRCodeModal();
-    }
-
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.ready;
-        if (registration.active) {
-          console.log('Service worker is active');
-        }
-      } catch (error) {
-        console.error('Service Worker error', error);
-      }
     }
   };
 
